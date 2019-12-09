@@ -1,53 +1,30 @@
 package com.baranov.l_02_observer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Observable;
 
-public class WeatherData implements Subject {
+public class WeatherData extends Observable {
 
-    private List observers;
     private float temperature;
     private float humidity;
     private float pressure;
 
     public WeatherData() {
-        this.observers = new ArrayList();
     }
 
-    @Override
-
-    public void registerObserver(final Observer o) {
-        observers.add(o);
+    public float getTemperature() {
+        return temperature;
     }
 
-    @Override
-    public void removeObserver(final Observer o) {
-        int i = observers.indexOf(o);
-        if (i > 0) {
-            observers.remove(i);
-        }
+    public float getHumidity() {
+        return humidity;
     }
 
-    @Override
-    public void notifyObservers() {
-        for (Object o : observers) {
-            ((Observer) o).update(temperature, humidity, pressure);
-        }
-    }
-
-    float getTemperature() {
-        return 0.0f;
-    }
-
-    float getHumidity() {
-        return 0.0f;
-    }
-
-    float getPressure() {
-        return 0.0f;
+    public float getPressure() {
+        return pressure;
     }
 
     public void measurementsChanged() {
+        setChanged();
         notifyObservers();
     }
 

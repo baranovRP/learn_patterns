@@ -1,30 +1,37 @@
 package com.baranov.l_02_observer;
 
+import java.util.Observable;
+import java.util.Observer;
+
 public class StatisticsDisplay implements Observer, DisplayElement {
+
+    Observable observable;
     private float maxTemp = 0.0f;
     private float minTemp = 200;
-    private float tempSum= 0.0f;
+    private float tempSum = 0.0f;
     private int numReadings;
-    private WeatherData weatherData;
 
-    public StatisticsDisplay(WeatherData weatherData) {
-        this.weatherData = weatherData;
-        weatherData.registerObserver(this);
+    public StatisticsDisplay(Observable observable) {
+        this.observable = observable;
+        observable.addObserver(this);
     }
 
-    public void update(float temp, float humidity, float pressure) {
-        tempSum += temp;
-        numReadings++;
+    @Override
+    public void update(Observable observable, Object o) {
+        if (observable instanceof WeatherData) {
+            WeatherData weatherData = (WeatherData) observable;
+            tempSum += weatherData.getTemperature();
+            numReadings++;
 
-        if (temp > maxTemp) {
-            maxTemp = temp;
+            if (weatherData.getTemperature() > maxTemp) {
+                maxTemp = weatherData.getTemperature();
+            }
+
+            if (weatherData.getTemperature() < minTemp) {
+                minTemp = weatherData.getTemperature();
+            }
+            display();
         }
-
-        if (temp < minTemp) {
-            minTemp = temp;
-        }
-
-        display();
     }
 
     public void display() {
